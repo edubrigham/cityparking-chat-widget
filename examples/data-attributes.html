@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CityParking Chat Widget - Attributs de Données</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #f5576c);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            min-height: 100vh;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        h1 {
+            color: #6366f1;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .method-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        
+        .method-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            border-top: 4px solid;
+        }
+        
+        .method-card.javascript {
+            border-top-color: #f59e0b;
+        }
+        
+        .method-card.data-attrs {
+            border-top-color: #10b981;
+        }
+        
+        .method-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .pros-cons {
+            margin-top: 15px;
+        }
+        
+        .pros, .cons {
+            margin: 10px 0;
+        }
+        
+        .pros {
+            color: #059669;
+        }
+        
+        .cons {
+            color: #dc2626;
+        }
+        
+        pre {
+            background: #1f2937;
+            color: #f9fafb;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            font-size: 14px;
+            border-left: 4px solid #6366f1;
+        }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .warning {
+            background: #fef3cd;
+            border: 1px solid #fecaca;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .emoji {
+            font-size: 1.5em;
+        }
+        
+        @media (max-width: 768px) {
+            .method-comparison {
+                grid-template-columns: 1fr;
+            }
+            h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><span class="emoji">🚀</span> CityParking Chat Widget - Attributs de Données</h1>
+        
+        <div class="highlight-box">
+            <strong>Cette page démontre l'initialisation via les attributs de données HTML - la méthode la plus simple!</strong>
+        </div>
+        
+        <div class="warning">
+            <strong>⚠️ Note de Démo:</strong> Cet exemple montre la structure du widget mais ne fonctionnera pas sans une URL d'endpoint de bot valide. Remplacez les URLs de placeholder par vos vrais endpoints de bot.
+        </div>
+        
+        <div class="method-comparison">
+            <div class="method-card javascript">
+                <div class="method-title">
+                    <span class="emoji">⚙️</span> Méthode JavaScript
+                </div>
+                <p>Configuration programmatique avec objet JavaScript complet.</p>
+                <div class="pros-cons">
+                    <div class="pros"><strong>✅ Avantages:</strong> Configuration dynamique, validation, contrôle total</div>
+                    <div class="cons"><strong>❌ Inconvénients:</strong> Plus de code, requis JavaScript</div>
+                </div>
+            </div>
+            
+            <div class="method-card data-attrs">
+                <div class="method-title">
+                    <span class="emoji">🏷️</span> Attributs de Données
+                </div>
+                <p>Configuration simple via les attributs HTML du script.</p>
+                <div class="pros-cons">
+                    <div class="pros"><strong>✅ Avantages:</strong> Très simple, une seule ligne, auto-initialisation</div>
+                    <div class="cons"><strong>❌ Inconvénients:</strong> Options limitées, pas de validation</div>
+                </div>
+            </div>
+        </div>
+        
+        <h2>🔧 Configuration Actuelle (Attributs de Données):</h2>
+        <pre><code>&lt;script 
+  src="https://your-cdn.com/chat.min.js"
+  data-chat-url="https://your-bot-endpoint.com/bot/your-bot-id"
+  data-language="fr"
+  data-widget-btn-color="#8b5cf6"
+  data-btn-position="bottom-right"
+  defer&gt;
+&lt;/script&gt;</code></pre>
+        
+        <h2>🆚 Comparaison avec la Méthode JavaScript:</h2>
+        <pre><code>&lt;!-- Méthode JavaScript (plus de contrôle) --&gt;
+&lt;script src="https://your-cdn.com/chat.min.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+  window.initCityparkingWidget({
+    chatUrl: 'https://your-bot-endpoint.com/bot/your-bot-id',
+    language: 'fr',
+    theme: {
+      primaryColor: '#8b5cf6',
+      position: 'bottom-right'
+    }
+  });
+&lt;/script&gt;</code></pre>
+        
+        <h2>📋 Attributs Disponibles:</h2>
+        <div style="background: #f8fafc; padding: 20px; border-radius: 10px; border-left: 4px solid #3b82f6;">
+            <ul>
+                <li><code>data-chat-url</code> - URL du bot (obligatoire)</li>
+                <li><code>data-language</code> - Langue du widget ('en', 'nl', 'fr')</li>
+                <li><code>data-widget-btn-color</code> - Couleur du bouton (hex, rgb, nom)</li>
+                <li><code>data-btn-position</code> - Position ('bottom-left', 'bottom-right')</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Demo widget (won't work without valid endpoint) -->
+    <script 
+        src="../dist/cityparking-chat-widget.js"
+        data-chat-url="https://your-bot-endpoint.com/bot/your-bot-id"
+        data-language="fr"
+        data-widget-btn-color="#8b5cf6"
+        data-btn-position="bottom-right"
+        defer>
+    </script>
+</body>
+</html>

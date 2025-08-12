@@ -1,0 +1,39 @@
+{
+  "name": "cityparking-chat-widget",
+  "version": "1.0.0",
+  "description": "A deployable chat widget for CityParking customer support with AI-powered assistance and handover capabilities",
+  "main": "dist/cityparking-chat-widget.js",
+  "scripts": {
+    "build": "npm run minify",
+    "minify": "terser src/cityparking-chat-widget.js -o dist/cityparking-chat-widget.min.js --source-map --compress --mangle",
+    "dev": "cp src/cityparking-chat-widget.js dist/cityparking-chat-widget.js",
+    "serve": "npx http-server . -p 8080 -c-1",
+    "test": "npx http-server examples -p 8081 -c-1"
+  },
+  "keywords": [
+    "chat-widget",
+    "customer-support", 
+    "ai-assistant",
+    "cityparking",
+    "javascript",
+    "web-component"
+  ],
+  "author": "RingRing <info@ringring.be>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/edubrigham/cityparking-chat-widget.git"
+  },
+  "homepage": "https://edubrigham.github.io/cityparking-chat-widget/",
+  "files": [
+    "dist/",
+    "examples/",
+    "README.md"
+  ],
+  "devDependencies": {
+    "terser": "^5.19.0",
+    "http-server": "^14.1.1"
+  },
+  "jsdelivr": "dist/cityparking-chat-widget.min.js",
+  "unpkg": "dist/cityparking-chat-widget.min.js"
+}

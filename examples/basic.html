@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CityParking Chat Widget - Basic Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #009648;
+            text-align: center;
+        }
+        .demo-content {
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        .note {
+            background: #f0f9ff;
+            border-left: 4px solid #009648;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .warning {
+            background: #fef3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        pre {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CityParking Chat Widget - Basic Example</h1>
+        
+        <div class="demo-content">
+            <p>This is a basic implementation of the CityParking chat widget using the new data attributes approach. The widget appears as a floating chat button in the bottom-right corner of the page.</p>
+            
+            <div class="warning">
+                <strong>⚠️ Demo Note:</strong> This example shows the widget structure but won't function without a valid bot endpoint URL. Replace the placeholder URLs with your actual bot endpoints.
+            </div>
+            
+            <h2>Implementation Code (Data Attributes - Recommended):</h2>
+            <pre><code>&lt;script 
+    src="https://your-cdn.com/chat.min.js" 
+    data-chat-url="https://your-bot-endpoint.com/bot/your-bot-id" 
+    data-btn-position="bottom-right"
+    data-widget-btn-color="#009648"
+    defer&gt;
+&lt;/script&gt;</code></pre>
+            
+            <h2>Alternative JavaScript Method:</h2>
+            <pre><code>&lt;script src="https://your-cdn.com/chat.min.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+  window.initCityparkingWidget({
+    chatUrl: 'https://your-bot-endpoint.com/bot/your-bot-id',
+    language: 'en',
+    theme: {
+      primaryColor: '#009648',
+      position: 'bottom-right'
+    }
+  });
+&lt;/script&gt;</code></pre>
+            
+            <h2>Available Data Attributes:</h2>
+            <ul>
+                <li><code>data-chat-url</code> - Bot endpoint URL (required)</li>
+                <li><code>data-btn-position</code> - Position: 'bottom-left' or 'bottom-right'</li>
+                <li><code>data-widget-btn-color</code> - Button color (any CSS color)</li>
+                <li><code>data-language</code> - Widget language: 'en', 'nl', 'fr'</li>
+            </ul>
+            
+            <h2>Features Demonstrated:</h2>
+            <ul>
+                <li>Basic chat functionality</li>
+                <li>AI-powered responses</li>
+                <li>Multi-language support (English)</li>
+                <li>Default green theme (#009648)</li>
+                <li>Bottom-right positioning</li>
+                <li>Contact form integration</li>
+                <li>Data attributes configuration</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Demo widget (won't work without valid endpoint) -->
+    <script 
+        src="../dist/cityparking-chat-widget.js" 
+        data-chat-url="https://your-bot-endpoint.com/bot/your-bot-id" 
+        data-btn-position="bottom-right"
+        data-widget-btn-color="#009648"
+        defer>
+    </script>
+</body>
+</html>

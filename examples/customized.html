@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CityParking Chat Widget - Aangepaste Configuratie</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #ff6b35;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .demo-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        .demo-card {
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .config-card {
+            background: #fff5f5;
+            border-left: 4px solid #ff6b35;
+        }
+        .features-card {
+            background: #f0f9ff;
+            border-left: 4px solid #3b82f6;
+        }
+        pre {
+            background: #1a1a1a;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            font-size: 14px;
+        }
+        .highlight {
+            background: #ff6b35;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .warning {
+            background: #fef3cd;
+            border: 1px solid #fecaca;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        @media (max-width: 768px) {
+            .demo-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 Aangepaste CityParking Chat Widget</h1>
+        
+        <div class="demo-grid">
+            <div class="demo-card config-card">
+                <h3>🔧 Aangepaste Configuratie</h3>
+                <ul>
+                    <li><span class="highlight">Kleur:</span> Oranje (#ff6b35)</li>
+                    <li><span class="highlight">Positie:</span> Links onderaan</li>
+                    <li><span class="highlight">Taal:</span> Nederlands</li>
+                    <li><span class="highlight">Thema:</span> Custom styling</li>
+                </ul>
+            </div>
+            
+            <div class="demo-card features-card">
+                <h3>✨ Functies</h3>
+                <ul>
+                    <li>AI-gestuurde antwoorden</li>
+                    <li>Meertalige ondersteuning</li>
+                    <li>Aanpasbare kleuren</li>
+                    <li>Flexibele positionering</li>
+                    <li>Contact formulier</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="warning">
+            <strong>⚠️ Demo Opmerking:</strong> Dit voorbeeld toont de widget structuur maar zal niet functioneren zonder een geldige bot endpoint URL. Vervang de placeholder URLs met uw werkelijke bot endpoints.
+        </div>
+        
+        <h2>Implementatie Code:</h2>
+        <pre><code>&lt;!-- Data Attributes Method (Recommended) --&gt;
+&lt;script 
+    src="https://your-cdn.com/chat.min.js" 
+    data-chat-url="https://your-bot-endpoint.com/bot/your-bot-id" 
+    data-btn-position="bottom-left"
+    data-widget-btn-color="#ff6b35"
+    data-language="nl"
+    defer&gt;
+&lt;/script&gt;
+
+&lt;!-- JavaScript Method (Alternative) --&gt;
+&lt;script src="https://your-cdn.com/chat.min.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+  window.initCityparkingWidget({
+    chatUrl: 'https://your-bot-endpoint.com/bot/your-bot-id',
+    language: 'nl',
+    theme: {
+      primaryColor: '#ff6b35',
+      position: 'bottom-left'
+    }
+  });
+&lt;/script&gt;</code></pre>
+
+        <h2>Beschikbare Configuratie Opties:</h2>
+        <pre><code>// Volledige configuratie voorbeeld
+window.initCityparkingWidget({
+  chatUrl: 'your-bot-endpoint-url',
+  language: 'nl',          // 'en', 'nl', 'fr'
+  theme: {
+    primaryColor: '#ff6b35',   // Elke geldige CSS kleur
+    position: 'bottom-left'    // 'bottom-left' of 'bottom-right'
+  }
+});</code></pre>
+    </div>
+
+    <!-- Demo widget (won't work without valid endpoint) -->
+    <script 
+        src="../dist/cityparking-chat-widget.js" 
+        data-chat-url="https://your-bot-endpoint.com/bot/your-bot-id" 
+        data-btn-position="bottom-left"
+        data-widget-btn-color="#ff6b35"
+        data-language="nl"
+        defer>
+    </script>
+</body>
+</html>
