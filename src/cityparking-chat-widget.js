@@ -660,6 +660,35 @@ class CityparkingChatWidget extends HTMLElement {
                 })
             });
 
+            // Check if response is streaming or simple JSON
+            const contentType = response.headers.get('content-type') || '';
+            const isStreaming = contentType.includes('text/plain') || contentType.includes('text/event-stream');
+            
+            if (!isStreaming) {
+                // Handle simple JSON response
+                const jsonResponse = await response.json();
+                
+                loadingDiv.remove();
+                messageDiv.style.display = 'block';
+                
+                if (jsonResponse.response) {
+                    // Handle n8n format: {"response": "text", "actions": []}
+                    let formattedContent = jsonResponse.response.replace(/\*\*/g, '');
+                    messageDiv.textContent = formattedContent;
+                } else if (jsonResponse.content) {
+                    // Handle direct content: {"content": "text"}
+                    let formattedContent = jsonResponse.content.replace(/\*\*/g, '');
+                    messageDiv.textContent = formattedContent;
+                } else {
+                    // Fallback: display the entire response
+                    messageDiv.textContent = JSON.stringify(jsonResponse);
+                }
+                
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                return;
+            }
+
+            // Handle streaming response (original code)
             const reader = response.body.getReader();
             const decoder = new TextDecoder();
             
