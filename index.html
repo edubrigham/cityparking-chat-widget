@@ -224,14 +224,13 @@
             <div class="card">
                 <h2>⚡ Quick Start</h2>
                 <div class="quick-start">
-                    <p><strong>1. Add the script tag:</strong></p>
-                    <pre><code>&lt;script src="https://cdn.jsdelivr.net/gh/your-org/cityparking-chat-widget@latest/dist/cityparking-chat-widget.min.js"&gt;&lt;/script&gt;</code></pre>
-                    
-                    <p><strong>2. Initialize:</strong></p>
-                    <pre><code>&lt;script&gt;
-  window.initCityparkingWidget({
-    webhookUrl: 'your-webhook-url'
-  });
+                    <p><strong>Single Script Tag (Recommended):</strong></p>
+                    <pre><code>&lt;script 
+  src="https://cdn.jsdelivr.net/gh/edubrigham/cityparking-chat-widget@latest/dist/cityparking-chat-widget.min.js"
+  data-webhook-url="https://your-n8n-instance.com/webhook/your-webhook-id"
+  data-language="nl"
+  data-primary-color="#009648"
+  data-position="bottom-right"&gt;
 &lt;/script&gt;</code></pre>
                 </div>
             </div>
@@ -271,6 +270,16 @@
                         Français • Purple theme • Data attributes
                     </div>
                 </a>
+                
+                <a href="examples/single-script.html" class="example-card">
+                    <h3>⚡ Single Script Tag</h3>
+                    <div class="description">
+                        Ultra-simple one-line integration with automatic initialization.
+                    </div>
+                    <div class="features">
+                        English • Green theme • Single script tag
+                    </div>
+                </a>
             </div>
         </div>
         
@@ -279,17 +288,17 @@
             <div class="cdn-links">
                 <h3>Production (Minified):</h3>
                 <div class="cdn-link">
-                    https://cdn.jsdelivr.net/gh/your-org/cityparking-chat-widget@latest/dist/cityparking-chat-widget.min.js
+                    https://cdn.jsdelivr.net/gh/edubrigham/cityparking-chat-widget@latest/dist/cityparking-chat-widget.min.js
                 </div>
                 
                 <h3>Development (Full):</h3>
                 <div class="cdn-link">
-                    https://cdn.jsdelivr.net/gh/your-org/cityparking-chat-widget@latest/dist/cityparking-chat-widget.js
+                    https://cdn.jsdelivr.net/gh/edubrigham/cityparking-chat-widget@latest/dist/cityparking-chat-widget.js
                 </div>
                 
                 <h3>GitHub Pages:</h3>
                 <div class="cdn-link">
-                    https://your-org.github.io/cityparking-chat-widget/dist/cityparking-chat-widget.min.js
+                    https://edubrigham.github.io/cityparking-chat-widget/dist/cityparking-chat-widget.min.js
                 </div>
             </div>
         </div>
@@ -312,7 +321,7 @@
     
     <div class="footer">
         <p>Built with ❤️ by <a href="https://www.ringring.be" target="_blank">RingRing</a></p>
-        <p>View on <a href="https://github.com/your-org/cityparking-chat-widget" target="_blank">GitHub</a> | 
+        <p>View on <a href="https://github.com/edubrigham/cityparking-chat-widget" target="_blank">GitHub</a> | 
            <a href="README.md" target="_blank">Documentation</a></p>
     </div>
 
