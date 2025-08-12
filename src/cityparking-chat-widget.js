@@ -5,10 +5,20 @@
  * Author: RingRing
  * 
  * Usage:
+ * Single script tag with data attributes:
+ * <script 
+ *   src="https://your-cdn.com/cityparking-chat-widget.js"
+ *   data-webhook-url="https://your-n8n-instance.com/webhook/your-webhook-id"
+ *   data-language="nl"
+ *   data-primary-color="#009648"
+ *   data-position="bottom-right">
+ * </script>
+ * 
+ * Or programmatic initialization:
  * <script src="https://your-cdn.com/cityparking-chat-widget.js"></script>
  * <script>
  *   window.initCityparkingWidget({
- *     chatUrl: 'https://dialoqbase-rag-demo.ringring.be/bot/a91b9e54-32fb-4893-9d8d-58b44ddb23ea',
+ *     webhookUrl: 'https://your-n8n-instance.com/webhook/your-webhook-id',
  *     language: 'nl', // optional: 'en', 'nl', 'fr'
  *     theme: {
  *       primaryColor: '#009648',
@@ -29,7 +39,7 @@ class CityparkingChatWidget extends HTMLElement {
         
         // Configuration with defaults
         this.config = {
-            chatUrl: config.chatUrl || null, // No default - must be provided
+            webhookUrl: config.webhookUrl || config.chatUrl || null, // No default - must be provided
             language: config.language || document.documentElement.lang?.toLowerCase() || 'en',
             theme: {
                 primaryColor: config.theme?.primaryColor || '#009648',
@@ -639,7 +649,7 @@ class CityparkingChatWidget extends HTMLElement {
             const messagesContainer = this.shadowRoot.querySelector('.chat-messages');
             messagesContainer.appendChild(containerDiv);
             
-            const response = await fetch(this.config.chatUrl, {
+            const response = await fetch(this.config.webhookUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -885,7 +895,7 @@ class CityparkingChatWidget extends HTMLElement {
 
     async submitUserInfo(userInfo) {
         try {
-            const response = await fetch(this.config.chatUrl, {
+            const response = await fetch(this.config.webhookUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -1004,9 +1014,9 @@ class CityparkingChatWidget extends HTMLElement {
 
 // Global initialization function
 window.initCityparkingWidget = function(config = {}) {
-    // Validate chat URL
-    if (!config.chatUrl) {
-        console.error('CityparkingWidget: chatUrl is required');
+    // Validate webhook URL
+    if (!config.webhookUrl && !config.chatUrl) {
+        console.error('CityparkingWidget: webhookUrl is required');
         return;
     }
     
@@ -1023,14 +1033,14 @@ window.initCityparkingWidget = function(config = {}) {
 
 // Auto-initialize if config is provided via data attributes
 document.addEventListener('DOMContentLoaded', () => {
-    const script = document.currentScript || document.querySelector('script[data-chat-url]');
-    if (script && script.dataset.chatUrl) {
+    const script = document.currentScript || document.querySelector('script[data-webhook-url], script[data-chat-url]');
+    if (script && (script.dataset.webhookUrl || script.dataset.chatUrl)) {
         window.initCityparkingWidget({
-            chatUrl: script.dataset.chatUrl,
+            webhookUrl: script.dataset.webhookUrl || script.dataset.chatUrl,
             language: script.dataset.language || document.documentElement.lang,
             theme: {
-                primaryColor: script.dataset.widgetBtnColor || script.dataset.primaryColor,
-                position: script.dataset.btnPosition || script.dataset.position || 'bottom-right'
+                primaryColor: script.dataset.primaryColor || script.dataset.widgetBtnColor,
+                position: script.dataset.position || script.dataset.btnPosition || 'bottom-right'
             }
         });
     }

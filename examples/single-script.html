@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Single Script Tag - CityParking Chat Widget</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #009648;
+            text-align: center;
+        }
+        .info-box {
+            background: #e8f5e8;
+            border: 1px solid #009648;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .code-block {
+            background: #f8f8f8;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Single Script Tag Integration</h1>
+        
+        <div class="info-box">
+            <h3>✨ Simple One-Line Integration</h3>
+            <p>This page demonstrates how to integrate the CityParking Chat Widget with just <strong>one script tag</strong> using data attributes. No need for separate initialization code!</p>
+        </div>
+
+        <h2>Implementation</h2>
+        <p>The widget on this page was added with this simple single script tag:</p>
+        
+        <div class="code-block">
+&lt;script 
+  src="https://cdn.jsdelivr.net/gh/edubrigham/cityparking-chat-widget@latest/dist/cityparking-chat-widget.min.js"
+  data-webhook-url="https://edubrigham.app.n8n.cloud/webhook/4091fa09-fb9a-4039-9411-7104d213f601"
+  data-language="en"
+  data-primary-color="#009648"
+  data-position="bottom-right"&gt;
+&lt;/script&gt;
+        </div>
+
+        <h2>Available Data Attributes</h2>
+        <ul>
+            <li><code>data-webhook-url</code> - Your n8n webhook URL (required)</li>
+            <li><code>data-language</code> - Widget language: 'en', 'nl', or 'fr' (optional)</li>
+            <li><code>data-primary-color</code> - Primary color for the widget (optional)</li>
+            <li><code>data-position</code> - Widget position: 'bottom-left' or 'bottom-right' (optional)</li>
+        </ul>
+
+        <h2>Benefits</h2>
+        <ul>
+            <li>✅ <strong>Simplest integration</strong> - Just one script tag</li>
+            <li>✅ <strong>Clean HTML</strong> - No extra initialization code needed</li>
+            <li>✅ <strong>Auto-initialization</strong> - Widget starts automatically</li>
+            <li>✅ <strong>Easy maintenance</strong> - All configuration in one place</li>
+        </ul>
+
+        <p>The chat widget should appear in the bottom-right corner of this page. Try clicking it to test the functionality!</p>
+    </div>
+
+    <!-- Single script tag integration -->
+    <script 
+      src="../dist/cityparking-chat-widget.min.js"
+      data-webhook-url="https://edubrigham.app.n8n.cloud/webhook/4091fa09-fb9a-4039-9411-7104d213f601"
+      data-language="en"
+      data-primary-color="#009648"
+      data-position="bottom-right">
+    </script>
+</body>
+</html>

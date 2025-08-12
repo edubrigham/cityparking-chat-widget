@@ -14,7 +14,19 @@ A deployable, self-contained chat widget for CityParking customer support with A
 
 ## Quick Start
 
-### CDN Usage (Recommended)
+### Single Script Tag (Recommended)
+
+```html
+<script 
+  src="https://cdn.jsdelivr.net/gh/edubrigham/cityparking-chat-widget@latest/dist/cityparking-chat-widget.min.js"
+  data-webhook-url="https://edubrigham.app.n8n.cloud/webhook/4091fa09-fb9a-4039-9411-7104d213f601"
+  data-language="nl"
+  data-primary-color="#009648"
+  data-position="bottom-right">
+</script>
+```
+
+### Alternative: Programmatic Initialization
 
 ```html
 <!-- Load the widget -->
@@ -33,31 +45,23 @@ A deployable, self-contained chat widget for CityParking customer support with A
 </script>
 ```
 
-### Alternative: Data Attributes
-
-```html
-<script 
-  src="https://cdn.jsdelivr.net/gh/edubrigham/cityparking-chat-widget@latest/dist/cityparking-chat-widget.min.js"
-  data-webhook-url="https://edubrigham.app.n8n.cloud/webhook/4091fa09-fb9a-4039-9411-7104d213f601"
-  data-language="nl"
-  data-primary-color="#009648"
-  data-position="bottom-right">
-</script>
-```
-
 ## Configuration Options
 
-### Basic Configuration
+### Data Attributes (Single Script Tag)
+
+| Attribute | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `data-webhook-url` | string | **required** | Your n8n webhook URL |
+| `data-language` | string | `'en'` | Widget language (`'en'`, `'nl'`, `'fr'`) |
+| `data-primary-color` | string | `'#009648'` | Primary color for the widget |
+| `data-position` | string | `'bottom-right'` | Widget position (`'bottom-left'` or `'bottom-right'`) |
+
+### Programmatic Configuration
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
 | `webhookUrl` | string | **required** | Your n8n webhook URL |
 | `language` | string | `'en'` | Widget language (`'en'`, `'nl'`, `'fr'`) |
-
-### Theme Configuration
-
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
 | `theme.primaryColor` | string | `'#009648'` | Primary color for the widget |
 | `theme.position` | string | `'bottom-right'` | Widget position (`'bottom-left'` or `'bottom-right'`) |
 
