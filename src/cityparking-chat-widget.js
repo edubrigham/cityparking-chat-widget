@@ -172,6 +172,9 @@ class CityparkingChatWidget extends HTMLElement {
         
         this.createWidget();
         this.initialize();
+        
+        // Track actual conversation language (may differ from config language)
+        this.conversationLanguage = this.config.language;
     }
     
     generateSessionToken() {
@@ -427,17 +430,17 @@ class CityparkingChatWidget extends HTMLElement {
             }
             
             .action-button {
-                padding: 8px 16px;
-                border-radius: 20px;
+                padding: 6px 12px;
+                border-radius: 16px;
                 cursor: pointer;
-                font-size: 14px;
+                font-size: 12px;
                 border: 1px solid var(--primary-color);
                 transition: all 0.2s;
             }
             
             .action-button.primary {
-                background: var(--primary-color);
-                color: white;
+                background: white;
+                color: var(--primary-color);
             }
             
             .action-button.secondary {
@@ -507,13 +510,13 @@ class CityparkingChatWidget extends HTMLElement {
 
             .user-info-form h3 {
                 margin-top: 0;
-                font-size: 18px;
+                font-size: 16px;
                 text-align: center;
                 color: #333;
             }
 
             .form-field {
-                margin-bottom: 15px;
+                margin-bottom: 10px;
             }
 
             .form-field label {
@@ -526,8 +529,8 @@ class CityparkingChatWidget extends HTMLElement {
             .form-field input,
             .form-field textarea {
                 width: 100%;
-                padding: 10px;
-                font-size: 14px;
+                padding: 8px;
+                font-size: 12px;
                 border: 1px solid #ddd;
                 border-radius: 8px;
                 box-sizing: border-box;
@@ -773,6 +776,13 @@ class CityparkingChatWidget extends HTMLElement {
                     let formattedContent = jsonResponse.response.replace(/\*\*/g, '');
                     messageText.textContent = formattedContent;
                     
+                    // Update conversation language if provided in response
+                    if (jsonResponse.sessionData && jsonResponse.sessionData.language) {
+                        this.conversationLanguage = jsonResponse.sessionData.language;
+                    } else if (jsonResponse.language) {
+                        this.conversationLanguage = jsonResponse.language;
+                    }
+                    
                     // Handle actions (URL and message buttons)
                     if (jsonResponse.actions && jsonResponse.actions.length > 0) {
                         const actionsDiv = document.createElement('div');
@@ -973,30 +983,33 @@ class CityparkingChatWidget extends HTMLElement {
         const chatMessages = this.shadowRoot.querySelector('.chat-messages');
         const chatInput = this.shadowRoot.querySelector('.chat-input');
 
+        // Use conversation language (actual chat language) instead of config language
+        const formLanguage = this.conversationLanguage || this.config.language;
+        
         const formHtml = `
             <div class="user-info-form">
-                <h3>${this.messages.userInfo.formTitle[this.config.language] || this.messages.userInfo.formTitle.en}</h3>
+                <h3>${this.messages.userInfo.formTitle[formLanguage] || this.messages.userInfo.formTitle.en}</h3>
                 <div class="form-field">
-                    <label for="firstName">${this.messages.userInfo.firstName[this.config.language] || this.messages.userInfo.firstName.en}</label>
+                    <label for="firstName">${this.messages.userInfo.firstName[formLanguage] || this.messages.userInfo.firstName.en}</label>
                     <input type="text" id="firstName" name="firstName" required>
                 </div>
                 <div class="form-field">
-                    <label for="lastName">${this.messages.userInfo.lastName[this.config.language] || this.messages.userInfo.lastName.en}</label>
+                    <label for="lastName">${this.messages.userInfo.lastName[formLanguage] || this.messages.userInfo.lastName.en}</label>
                     <input type="text" id="lastName" name="lastName" required>
                 </div>
                 <div class="form-field">
-                    <label for="email">${this.messages.userInfo.email[this.config.language] || this.messages.userInfo.email.en}</label>
+                    <label for="email">${this.messages.userInfo.email[formLanguage] || this.messages.userInfo.email.en}</label>
                     <input type="email" id="email" name="email" required>
                 </div>
                 <div class="form-field">
-                    <label for="phone">${this.messages.userInfo.phone[this.config.language] || this.messages.userInfo.phone.en}</label>
+                    <label for="phone">${this.messages.userInfo.phone[formLanguage] || this.messages.userInfo.phone.en}</label>
                     <input type="tel" id="phone" name="phone" required>
                 </div>
                 <div class="form-field">
-                    <label for="question">${this.messages.userInfo.question[this.config.language] || this.messages.userInfo.question.en}</label>
+                    <label for="question">${this.messages.userInfo.question[formLanguage] || this.messages.userInfo.question.en}</label>
                     <textarea id="question" name="question" required></textarea>
                 </div>
-                <button class="form-submit-button">${this.messages.userInfo.submitButton[this.config.language] || this.messages.userInfo.submitButton.en}</button>
+                <button class="form-submit-button">${this.messages.userInfo.submitButton[formLanguage] || this.messages.userInfo.submitButton.en}</button>
             </div>
         `;
 
@@ -1030,18 +1043,21 @@ class CityparkingChatWidget extends HTMLElement {
         const phone = form.querySelector('#phone').value.trim();
         const question = form.querySelector('#question').value.trim();
 
+        // Use conversation language for validation messages
+        const formLanguage = this.conversationLanguage || this.config.language;
+        
         if (!firstName || !lastName || !question) {
-            this.addMessage(this.messages.userInfo.validation.required[this.config.language] || this.messages.userInfo.validation.required.en, 'bot');
+            this.addMessage(this.messages.userInfo.validation.required[formLanguage] || this.messages.userInfo.validation.required.en, 'bot');
             return;
         }
 
         if (!this.validateEmail(email)) {
-            this.addMessage(this.messages.userInfo.validation.email[this.config.language] || this.messages.userInfo.validation.email.en, 'bot');
+            this.addMessage(this.messages.userInfo.validation.email[formLanguage] || this.messages.userInfo.validation.email.en, 'bot');
             return;
         }
 
         if (!this.validateBelgianPhone(phone)) {
-            this.addMessage(this.messages.userInfo.validation.phone[this.config.language] || this.messages.userInfo.validation.phone.en, 'bot');
+            this.addMessage(this.messages.userInfo.validation.phone[formLanguage] || this.messages.userInfo.validation.phone.en, 'bot');
             return;
         }
 
@@ -1051,21 +1067,21 @@ class CityparkingChatWidget extends HTMLElement {
             email,
             phone,
             question,
-            language: this.config.language,
+            language: this.conversationLanguage || this.config.language, // Use conversation language
             conversation: this.conversationHistory,
         };
 
         submitButton.disabled = true;
-        submitButton.textContent = this.messages.userInfo.submitting[this.config.language] || this.messages.userInfo.submitting.en;
+        submitButton.textContent = this.messages.userInfo.submitting[formLanguage] || this.messages.userInfo.submitting.en;
 
         try {
             const response = await this.submitUserInfo(userInfo);
             this.hideUserInfoForm();
-            // Use the proper success message in the user's language
-            const successMessage = this.messages.userInfo.success[this.config.language] || this.messages.userInfo.success.en;
+            // Use the proper success message in the conversation language
+            const successMessage = this.messages.userInfo.success[formLanguage] || this.messages.userInfo.success.en;
             this.addMessage(response.message || response.response || successMessage, 'bot');
         } catch (error) {
-            this.addMessage(this.messages.errors.submitInfo[this.config.language] || this.messages.errors.submitInfo.en, 'bot');
+            this.addMessage(this.messages.errors.submitInfo[formLanguage] || this.messages.errors.submitInfo.en, 'bot');
         } finally {
             this.setInputState(true);
         }
