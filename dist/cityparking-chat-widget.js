@@ -612,6 +612,7 @@ class CityparkingChatWidget extends HTMLElement {
         
         closeButton.addEventListener('click', () => {
             chatContainer.classList.remove('active');
+            this.resetWidgetState();
         });
         
         sendButton.addEventListener('click', () => this.sendMessage());
@@ -633,6 +634,42 @@ class CityparkingChatWidget extends HTMLElement {
         if (enabled) {
             input.focus();
         }
+    }
+
+    resetWidgetState() {
+        // Generate new session token
+        this.sessionToken = this.generateSessionToken();
+        
+        // Reset conversation language to config default
+        this.conversationLanguage = this.config.language;
+        
+        // Clear conversation history if it exists
+        if (this.conversationHistory) {
+            this.conversationHistory = [];
+        }
+        
+        // Reset any flags
+        this.isGeneratingResponse = false;
+        
+        // Clear chat messages
+        const messagesContainer = this.shadowRoot.querySelector('.chat-messages');
+        messagesContainer.innerHTML = '';
+        
+        // Hide form if it's visible
+        this.hideUserInfoForm();
+        
+        // Clear input field
+        const input = this.shadowRoot.querySelector('.chat-input input');
+        input.value = '';
+        
+        // Re-enable input
+        this.setInputState(true);
+        
+        // Add fresh welcome message
+        const welcomeMessage = this.messages.welcome[this.config.language] || this.messages.welcome.en;
+        this.addMessage(welcomeMessage, 'bot', [], true);
+        
+        console.log('Widget state reset. New session:', this.sessionToken);
     }
 
     sendActionMessage(payload) {
