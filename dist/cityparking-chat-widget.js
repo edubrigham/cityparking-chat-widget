@@ -672,9 +672,51 @@ class CityparkingChatWidget extends HTMLElement {
                 messageDiv.style.display = 'block';
                 
                 if (jsonResponse.response) {
-                    // Handle n8n format: {"response": "text", "actions": []}
+                    // Handle n8n format: {"response": "text", "actions": [], "sources": []}
                     let formattedContent = jsonResponse.response.replace(/\*\*/g, '');
                     messageDiv.textContent = formattedContent;
+                    
+                    // Handle actions (URL buttons)
+                    if (jsonResponse.actions && jsonResponse.actions.length > 0) {
+                        const actionsDiv = document.createElement('div');
+                        actionsDiv.classList.add('sources');
+                        
+                        jsonResponse.actions.forEach((action) => {
+                            if (action.type === 'url') {
+                                const button = document.createElement('button');
+                                button.classList.add('source-button');
+                                button.textContent = action.text || 'Link';
+                                button.addEventListener('click', () => {
+                                    window.open(action.payload, '_blank');
+                                });
+                                actionsDiv.appendChild(button);
+                            }
+                        });
+                        
+                        messageDiv.appendChild(actionsDiv);
+                    }
+                    
+                    // Handle sources array (fallback if no actions)
+                    else if (jsonResponse.sources && jsonResponse.sources.length > 0) {
+                        const sourcesDiv = document.createElement('div');
+                        sourcesDiv.classList.add('sources');
+                        
+                        const topSources = jsonResponse.sources.slice(0, 2);
+                        const sourceText = this.messages.sourceButton[this.config.language] || this.messages.sourceButton.en;
+                        
+                        topSources.forEach((source, index) => {
+                            const button = document.createElement('button');
+                            button.classList.add('source-button');
+                            button.textContent = `${sourceText} ${index + 1}`;
+                            button.addEventListener('click', () => {
+                                window.open(source, '_blank');
+                            });
+                            sourcesDiv.appendChild(button);
+                        });
+                        
+                        messageDiv.appendChild(sourcesDiv);
+                    }
+                    
                 } else if (jsonResponse.content) {
                     // Handle direct content: {"content": "text"}
                     let formattedContent = jsonResponse.content.replace(/\*\*/g, '');
