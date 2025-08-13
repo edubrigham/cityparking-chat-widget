@@ -3,339 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CityParking Chat Widget - Documentation & Examples</title>
+    <title>CityParking Chat Widget - Test Page</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-        }
-        
-        .container {
-            max-width: 1200px;
+            font-family: Arial, sans-serif;
+            max-width: 800px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 40px 20px;
+            background-color: #f5f5f5;
         }
-        
-        .header {
-            text-align: center;
-            color: white;
-            margin-bottom: 40px;
-            padding: 40px 0;
-        }
-        
-        .header h1 {
-            font-size: 3rem;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-        
-        .header p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
-        
-        .badge {
-            display: inline-block;
-            background: #009648;
-            color: white;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            margin: 10px 5px;
-        }
-        
-        .content-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-bottom: 40px;
-        }
-        
-        .card {
+        .container {
             background: white;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease;
-        }
-        
-        .card:hover {
-            transform: translateY(-5px);
-        }
-        
-        .card h2 {
-            color: #009648;
-            margin-bottom: 20px;
-            font-size: 1.5rem;
-        }
-        
-        .examples-section {
-            background: white;
-            border-radius: 15px;
             padding: 40px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            margin-bottom: 40px;
-        }
-        
-        .examples-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-            margin-top: 30px;
-        }
-        
-        .example-card {
-            border: 2px solid #e5e7eb;
             border-radius: 10px;
-            padding: 25px;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            color: inherit;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-        
-        .example-card:hover {
-            border-color: #009648;
-            box-shadow: 0 5px 15px rgba(0,150,72,0.2);
-            transform: translateY(-2px);
-        }
-        
-        .example-card h3 {
+        h1 {
             color: #009648;
-            margin-bottom: 10px;
-        }
-        
-        .example-card .description {
-            color: #666;
-            margin-bottom: 15px;
-        }
-        
-        .example-card .features {
-            font-size: 0.9rem;
-            color: #888;
-        }
-        
-        .quick-start {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 20px;
-            margin: 20px 0;
-            border-left: 4px solid #009648;
-        }
-        
-        pre {
-            background: #1a1a1a;
-            color: #f8f8f2;
-            padding: 20px;
-            border-radius: 8px;
-            overflow-x: auto;
-            font-size: 14px;
-        }
-        
-        .cdn-links {
-            background: #e6f3ff;
-            border-radius: 10px;
-            padding: 20px;
-            margin: 20px 0;
-        }
-        
-        .cdn-links h3 {
-            color: #0066cc;
-            margin-bottom: 15px;
-        }
-        
-        .cdn-link {
-            background: white;
-            padding: 10px 15px;
-            border-radius: 5px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            font-family: monospace;
-            word-break: break-all;
-        }
-        
-        .footer {
             text-align: center;
-            color: white;
-            padding: 40px 0;
-            opacity: 0.8;
+            margin-bottom: 30px;
         }
-        
-        .footer a {
-            color: white;
-            text-decoration: none;
+        .info-box {
+            background: #e8f5e8;
+            border: 1px solid #009648;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
         }
-        
-        .footer a:hover {
-            text-decoration: underline;
+        .code-block {
+            background: #f8f8f8;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            overflow-x: auto;
+            white-space: pre;
         }
-        
-        @media (max-width: 768px) {
-            .content-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .header h1 {
-                font-size: 2rem;
-            }
-            
-            .examples-grid {
-                grid-template-columns: 1fr;
-            }
+        .status {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>🚗 CityParking Chat Widget</h1>
-            <p>Deployable AI-powered customer support widget</p>
-            <div>
-                <span class="badge">JavaScript</span>
-                <span class="badge">Web Components</span>
-                <span class="badge">Multi-language</span>
-                <span class="badge">Customizable</span>
-            </div>
-        </div>
+        <h1>🧪 CityParking Chat Widget Test</h1>
         
-        <div class="content-grid">
-            <div class="card">
-                <h2>🚀 Features</h2>
-                <ul>
-                    <li>AI-powered customer support</li>
-                    <li>Seamless handover to human agents</li>
-                    <li>Multi-language support (EN, NL, FR)</li>
-                    <li>Responsive design</li>
-                    <li>Customizable themes</li>
-                    <li>Session management</li>
-                    <li>Email integration</li>
-                    <li>Easy CDN deployment</li>
-                </ul>
-            </div>
-            
-            <div class="card">
-                <h2>⚡ Quick Start</h2>
-                <div class="quick-start">
-                    <p><strong>Single Script Tag (Recommended):</strong></p>
-                    <pre><code>&lt;script 
+        <div class="info-box">
+            <h3>✅ Test Configuration</h3>
+            <p>This page tests the single script tag integration with your n8n webhook.</p>
+            <ul>
+                <li><strong>Source:</strong> CDN (jsdelivr)</li>
+                <li><strong>Language:</strong> Dutch (nl)</li>
+                <li><strong>Position:</strong> Bottom-right</li>
+                <li><strong>Color:</strong> CityParking Green (#009648)</li>
+            </ul>
+        </div>
+
+        <div class="status">
+            <strong>🎯 Expected Behavior:</strong><br>
+            1. Chat bubble should appear in bottom-right corner<br>
+            2. Click to open chat interface<br>
+            3. Send "hello" message<br>
+            4. Should receive: "Welcome! I am Cue, your digital assistant powered by AI! 👋"
+        </div>
+
+        <div class="info-box">
+            <h3>📝 Implementation Code</h3>
+            <p>This page uses exactly one script tag:</p>
+            <div class="code-block">&lt;script 
   src="https://cdn.jsdelivr.net/gh/edubrigham/cityparking-chat-widget@latest/dist/cityparking-chat-widget.min.js"
-  data-webhook-url="https://your-n8n-instance.com/webhook/your-webhook-id"
+  data-webhook-url="https://edubrigham.app.n8n.cloud/webhook/4091fa09-fb9a-4039-9411-7104d213f601"
   data-language="nl"
   data-primary-color="#009648"
   data-position="bottom-right"&gt;
-&lt;/script&gt;</code></pre>
-                </div>
-            </div>
+&lt;/script&gt;</div>
         </div>
-        
-        <div class="examples-section">
-            <h2>📚 Examples & Demos</h2>
-            <p>Explore different configurations and implementation methods:</p>
-            
-            <div class="examples-grid">
-                <a href="examples/basic.html" class="example-card">
-                    <h3>🏁 Basic Implementation</h3>
-                    <div class="description">
-                        Simple setup with default configuration and English language.
-                    </div>
-                    <div class="features">
-                        English • Default theme • Bottom-right position
-                    </div>
-                </a>
-                
-                <a href="examples/customized.html" class="example-card">
-                    <h3>🎨 Custom Theme & Position</h3>
-                    <div class="description">
-                        Customized orange theme with Dutch language and left positioning.
-                    </div>
-                    <div class="features">
-                        Nederlands • Orange theme • Bottom-left position
-                    </div>
-                </a>
-                
-                <a href="examples/data-attributes.html" class="example-card">
-                    <h3>🏷️ Data Attributes Method</h3>
-                    <div class="description">
-                        Simple initialization using HTML data attributes instead of JavaScript.
-                    </div>
-                    <div class="features">
-                        Français • Purple theme • Data attributes
-                    </div>
-                </a>
-                
-                <a href="examples/single-script.html" class="example-card">
-                    <h3>⚡ Single Script Tag</h3>
-                    <div class="description">
-                        Ultra-simple one-line integration with automatic initialization.
-                    </div>
-                    <div class="features">
-                        English • Green theme • Single script tag
-                    </div>
-                </a>
-            </div>
-        </div>
-        
-        <div class="examples-section">
-            <h2>🔗 CDN Links</h2>
-            <div class="cdn-links">
-                <h3>Production (Minified):</h3>
-                <div class="cdn-link">
-                    https://cdn.jsdelivr.net/gh/edubrigham/cityparking-chat-widget@latest/dist/cityparking-chat-widget.min.js
-                </div>
-                
-                <h3>Development (Full):</h3>
-                <div class="cdn-link">
-                    https://cdn.jsdelivr.net/gh/edubrigham/cityparking-chat-widget@latest/dist/cityparking-chat-widget.js
-                </div>
-                
-                <h3>GitHub Pages:</h3>
-                <div class="cdn-link">
-                    https://edubrigham.github.io/cityparking-chat-widget/dist/cityparking-chat-widget.min.js
-                </div>
-            </div>
-        </div>
-        
-        <div class="examples-section">
-            <h2>⚙️ Configuration Options</h2>
-            <pre><code>window.initCityparkingWidget({
-  // Required
-  webhookUrl: 'https://your-n8n-instance.com/webhook/your-id',
-  
-  // Optional
-  language: 'nl',           // 'en', 'nl', 'fr'
-  theme: {
-    primaryColor: '#009648', // Any valid CSS color
-    position: 'bottom-right' // 'bottom-left' or 'bottom-right'
-  }
-});</code></pre>
-        </div>
-    </div>
-    
-    <div class="footer">
-        <p>Built with ❤️ by <a href="https://www.ringring.be" target="_blank">RingRing</a></p>
-        <p>View on <a href="https://github.com/edubrigham/cityparking-chat-widget" target="_blank">GitHub</a> | 
-           <a href="README.md" target="_blank">Documentation</a></p>
+
+        <p><strong>Instructions:</strong> Look for the green chat bubble in the bottom-right corner of this page. Click it to test the chat functionality!</p>
     </div>
 
-    <!-- Demo widget on this page -->
-    <script src="dist/cityparking-chat-widget.js"></script>
-    <script>
-        window.initCityparkingWidget({
-            webhookUrl: 'https://edubrigham.app.n8n.cloud/webhook/4091fa09-fb9a-4039-9411-7104d213f601',
-            language: 'en',
-            theme: {
-                primaryColor: '#009648',
-                position: 'bottom-right'
-            }
-        });
+    <!-- Single script tag integration - THIS IS THE TEST (using local version with new design) -->
+    <script 
+      src="dist/cityparking-chat-widget.js"
+      data-webhook-url="https://edubrigham.app.n8n.cloud/webhook/4091fa09-fb9a-4039-9411-7104d213f601"
+      data-language="fr"
+      data-primary-color="#009648"
+      data-position="bottom-right">
     </script>
 </body>
 </html>

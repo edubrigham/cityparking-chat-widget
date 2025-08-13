@@ -151,6 +151,11 @@ class CityparkingChatWidget extends HTMLElement {
                         nl: "Voer een geldig Belgisch telefoonnummer in (bijv. 0470123456 of 02123456)",
                         fr: "Veuillez entrer un numéro de téléphone belge valide (ex: 0470123456 ou 02123456)"
                     }
+                },
+                success: {
+                    en: "Thank you! Your information has been sent to our support team.",
+                    nl: "Bedankt! Uw informatie is verzonden naar ons supportteam.",
+                    fr: "Merci ! Vos informations ont été envoyées à notre équipe de support."
                 }
             },
             placeholder: {
@@ -268,8 +273,8 @@ class CityparkingChatWidget extends HTMLElement {
                 overflow-y: auto;
                 display: flex;
                 flex-direction: column;
-                gap: 15px;
-                background: white;
+                gap: 16px;
+                background: #f8fafc;
             }
             
             .message {
@@ -283,45 +288,67 @@ class CityparkingChatWidget extends HTMLElement {
             }
             
             .user-message {
-                background: var(--primary-color);
+                background: #1e293b;
                 color: white;
                 align-self: flex-end;
-                border-bottom-right-radius: 5px;
+                border-radius: 16px;
+                padding: 12px 16px;
+                font-size: 14px;
+                line-height: 1.5;
+                max-width: 80%;
             }
             
             .bot-message-container {
                 display: flex;
-                align-items: flex-start;
-                gap: 8px;
-                max-width: 85%;
+                justify-content: flex-start;
+                max-width: 80%;
                 align-self: flex-start;
             }
             
+            .bot-message {
+                background: white;
+                color: #1e293b;
+                border: 1px solid #e2e8f0;
+                border-radius: 16px;
+                margin: 0;
+                line-height: 1.5;
+                white-space: pre-wrap;
+                padding: 16px;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+                width: 100%;
+            }
+            
+            .bot-header {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                margin-bottom: 8px;
+            }
+            
             .bot-avatar {
-                width: 32px;
-                height: 32px;
-                min-width: 32px;
+                width: 20px;
+                height: 20px;
                 border-radius: 50%;
                 background: var(--primary-color);
-                margin-right: 8px;
-                flex-shrink: 0;
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 color: white;
                 font-weight: bold;
-                font-size: 14px;
+                font-size: 11px;
+                flex-shrink: 0;
             }
             
-            .bot-message {
-                background: #E8E8E8;
-                color: black;
-                align-self: flex-start;
-                border-bottom-left-radius: 5px;
-                margin: 0;
-                line-height: 1.4;
-                white-space: pre-wrap;
-                padding: 12px 16px;
+            .bot-label {
+                font-size: 12px;
+                font-weight: 600;
+                color: #64748b;
+            }
+            
+            .bot-message-text {
+                font-size: 14px;
+                line-height: 1.5;
+                color: #1e293b;
             }
             
             .chat-input {
@@ -605,6 +632,59 @@ class CityparkingChatWidget extends HTMLElement {
         }
     }
 
+    sendActionMessage(payload) {
+        // Add the user's action choice to the chat
+        const displayText = payload === 'handover_request_yes' ? 'Ja, graag' : 
+                           payload === 'handover_request_no' ? 'Nee, bedankt' : payload;
+        this.addMessage(displayText, 'user');
+        
+        // Special handling for handover_request_yes - show form directly without webhook call
+        if (payload === 'handover_request_yes') {
+            this.showUserInfoForm();
+            return;
+        }
+        
+        // For other actions, proceed with webhook call
+        this.setInputState(false);
+        this.isGeneratingResponse = true;
+        
+        // Send to webhook
+        this.sendMessageToWebhook(payload);
+    }
+
+    async sendMessageToWebhook(message) {
+        try {
+            const response = await fetch(this.config.webhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    chatInput: message,
+                    sessionId: this.sessionToken
+                })
+            });
+
+            const jsonResponse = await response.json();
+            
+            if (jsonResponse.response) {
+                this.addMessage(jsonResponse.response, 'bot');
+                
+                // Show form if this is a handover confirmation
+                if (message === 'handover_request_yes') {
+                    this.showUserInfoForm();
+                }
+            }
+            
+        } catch (error) {
+            console.error('Error sending action message:', error);
+            this.addMessage(this.messages.errors.general[this.config.language] || this.messages.errors.general.en, 'bot');
+        } finally {
+            this.isGeneratingResponse = false;
+            this.setInputState(true);
+        }
+    }
+
     async sendMessage() {
         const input = this.shadowRoot.querySelector('input');
         const message = input.value.trim();
@@ -626,10 +706,6 @@ class CityparkingChatWidget extends HTMLElement {
             const containerDiv = document.createElement('div');
             containerDiv.classList.add('bot-message-container');
             
-            const avatarDiv = document.createElement('div');
-            avatarDiv.classList.add('bot-avatar');
-            avatarDiv.textContent = 'C';
-            
             const loadingDiv = document.createElement('div');
             loadingDiv.classList.add('typing-indicator');
             for (let i = 0; i < 3; i++) {
@@ -639,10 +715,31 @@ class CityparkingChatWidget extends HTMLElement {
             }
             
             const messageDiv = document.createElement('div');
-            messageDiv.classList.add('message', 'bot-message');
+            messageDiv.classList.add('bot-message');
             messageDiv.style.display = 'none';
             
-            containerDiv.appendChild(avatarDiv);
+            // Create bot header with avatar and label (will be shown when message appears)
+            const botHeader = document.createElement('div');
+            botHeader.classList.add('bot-header');
+            
+            const avatarDiv = document.createElement('div');
+            avatarDiv.classList.add('bot-avatar');
+            avatarDiv.textContent = 'C';
+            
+            const labelDiv = document.createElement('span');
+            labelDiv.classList.add('bot-label');
+            labelDiv.textContent = 'Assistant';
+            
+            botHeader.appendChild(avatarDiv);
+            botHeader.appendChild(labelDiv);
+            
+            // Create message text container
+            const messageText = document.createElement('div');
+            messageText.classList.add('bot-message-text');
+            
+            messageDiv.appendChild(botHeader);
+            messageDiv.appendChild(messageText);
+            
             containerDiv.appendChild(loadingDiv);
             containerDiv.appendChild(messageDiv);
             
@@ -674,23 +771,31 @@ class CityparkingChatWidget extends HTMLElement {
                 if (jsonResponse.response) {
                     // Handle n8n format: {"response": "text", "actions": [], "sources": []}
                     let formattedContent = jsonResponse.response.replace(/\*\*/g, '');
-                    messageDiv.textContent = formattedContent;
+                    messageText.textContent = formattedContent;
                     
-                    // Handle actions (URL buttons)
+                    // Handle actions (URL and message buttons)
                     if (jsonResponse.actions && jsonResponse.actions.length > 0) {
                         const actionsDiv = document.createElement('div');
-                        actionsDiv.classList.add('sources');
+                        actionsDiv.classList.add('action-buttons');
                         
                         jsonResponse.actions.forEach((action) => {
+                            const button = document.createElement('button');
+                            button.textContent = action.text || 'Action';
+                            
                             if (action.type === 'url') {
-                                const button = document.createElement('button');
                                 button.classList.add('source-button');
-                                button.textContent = action.text || 'Link';
                                 button.addEventListener('click', () => {
                                     window.open(action.payload, '_blank');
                                 });
-                                actionsDiv.appendChild(button);
+                            } else if (action.type === 'message') {
+                                button.classList.add('action-button', 'primary');
+                                button.addEventListener('click', () => {
+                                    // Send the payload as a message
+                                    this.sendActionMessage(action.payload);
+                                });
                             }
+                            
+                            actionsDiv.appendChild(button);
                         });
                         
                         messageDiv.appendChild(actionsDiv);
@@ -720,10 +825,10 @@ class CityparkingChatWidget extends HTMLElement {
                 } else if (jsonResponse.content) {
                     // Handle direct content: {"content": "text"}
                     let formattedContent = jsonResponse.content.replace(/\*\*/g, '');
-                    messageDiv.textContent = formattedContent;
+                    messageText.textContent = formattedContent;
                 } else {
                     // Fallback: display the entire response
-                    messageDiv.textContent = JSON.stringify(jsonResponse);
+                    messageText.textContent = JSON.stringify(jsonResponse);
                 }
                 
                 messagesContainer.scrollTop = messagesContainer.scrollHeight;
@@ -770,7 +875,7 @@ class CityparkingChatWidget extends HTMLElement {
                                     formattedToken += ' ';
                                 }
                                 
-                                messageDiv.innerHTML += formattedToken;
+                                messageText.innerHTML += formattedToken;
                                 this.scrollToBottom();
                                 break;
                                 
@@ -941,8 +1046,8 @@ class CityparkingChatWidget extends HTMLElement {
         }
 
         const userInfo = {
-            name: firstName,
-            lastname: lastName,
+            firstName,
+            lastName,
             email,
             phone,
             question,
@@ -956,7 +1061,9 @@ class CityparkingChatWidget extends HTMLElement {
         try {
             const response = await this.submitUserInfo(userInfo);
             this.hideUserInfoForm();
-            this.addMessage(response.message || response.error || 'Form submitted successfully!', 'bot');
+            // Use the proper success message in the user's language
+            const successMessage = this.messages.userInfo.success[this.config.language] || this.messages.userInfo.success.en;
+            this.addMessage(response.message || response.response || successMessage, 'bot');
         } catch (error) {
             this.addMessage(this.messages.errors.submitInfo[this.config.language] || this.messages.errors.submitInfo.en, 'bot');
         } finally {
@@ -972,9 +1079,18 @@ class CityparkingChatWidget extends HTMLElement {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    chatInput: 'form_submission',
+                    chatInput: 'handover_form_submission',
                     sessionId: this.sessionToken,
-                    formData: userInfo
+                    handover_info: {
+                        firstName: userInfo.firstName,
+                        lastName: userInfo.lastName,
+                        email: userInfo.email,
+                        phone: userInfo.phone,
+                        question: userInfo.question
+                    },
+                    formData: userInfo,
+                    bypass_conversational: true,
+                    form_complete: true
                 })
             });
 
@@ -1002,16 +1118,34 @@ class CityparkingChatWidget extends HTMLElement {
             const containerDiv = document.createElement('div');
             containerDiv.classList.add('bot-message-container');
             
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('bot-message');
+            if (isWelcome) {
+                messageDiv.classList.add('welcome-message');
+            }
+            
+            // Create bot header with avatar and label
+            const botHeader = document.createElement('div');
+            botHeader.classList.add('bot-header');
+            
             const avatarDiv = document.createElement('div');
             avatarDiv.classList.add('bot-avatar');
             avatarDiv.textContent = 'C';
             
-            const messageDiv = document.createElement('div');
-            messageDiv.classList.add('message', 'bot-message');
-            if (isWelcome) {
-                messageDiv.classList.add('welcome-message');
-            }
-            messageDiv.innerHTML = text;
+            const labelDiv = document.createElement('span');
+            labelDiv.classList.add('bot-label');
+            labelDiv.textContent = 'Assistant';
+            
+            botHeader.appendChild(avatarDiv);
+            botHeader.appendChild(labelDiv);
+            
+            // Create message text container
+            const messageText = document.createElement('div');
+            messageText.classList.add('bot-message-text');
+            messageText.innerHTML = text;
+            
+            messageDiv.appendChild(botHeader);
+            messageDiv.appendChild(messageText);
             
             if (sources && sources.length > 0) {
                 const sourcesDiv = document.createElement('div');
@@ -1020,7 +1154,6 @@ class CityparkingChatWidget extends HTMLElement {
                 messageDiv.appendChild(sourcesDiv);
             }
             
-            containerDiv.appendChild(avatarDiv);
             containerDiv.appendChild(messageDiv);
             messagesContainer.appendChild(containerDiv);
         } else {
