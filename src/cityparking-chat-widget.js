@@ -672,10 +672,9 @@ class CityparkingChatWidget extends HTMLElement {
         console.log('Widget state reset. New session:', this.sessionToken);
     }
 
-    sendActionMessage(payload) {
-        // Add the user's action choice to the chat
-        const displayText = payload === 'handover_request_yes' ? 'Ja, graag' : 
-                           payload === 'handover_request_no' ? 'Nee, bedankt' : payload;
+    sendActionMessage(payload, buttonText = null) {
+        // Use the actual button text that was clicked, or fallback to payload
+        const displayText = buttonText || payload;
         this.addMessage(displayText, 'user');
         
         // Special handling for handover_request_yes - show form directly without webhook call
@@ -684,7 +683,7 @@ class CityparkingChatWidget extends HTMLElement {
             return;
         }
         
-        // For other actions, proceed with webhook call
+        // For other actions (including handover_request_no), proceed with webhook call
         this.setInputState(false);
         this.isGeneratingResponse = true;
         
@@ -837,8 +836,8 @@ class CityparkingChatWidget extends HTMLElement {
                             } else if (action.type === 'message') {
                                 button.classList.add('action-button', 'primary');
                                 button.addEventListener('click', () => {
-                                    // Send the payload as a message
-                                    this.sendActionMessage(action.payload);
+                                    // Send both the payload and the actual button text that was clicked
+                                    this.sendActionMessage(action.payload, action.text);
                                 });
                             }
                             
