@@ -672,9 +672,19 @@ class CityparkingChatWidget extends HTMLElement {
                 messageDiv.style.display = 'block';
                 
                 if (jsonResponse.response) {
-                    // Handle n8n format: {"response": "text", "actions": []}
+                    // Handle n8n format: {"response": "text", "actions": [], "sources": []}
                     let formattedContent = jsonResponse.response.replace(/\*\*/g, '');
                     messageDiv.textContent = formattedContent;
+                    
+                    // Handle action buttons
+                    if (jsonResponse.actions && jsonResponse.actions.length > 0) {
+                        this.renderActionButtons(messageDiv, jsonResponse.actions);
+                    }
+                    
+                    // Handle source buttons
+                    if (jsonResponse.sources && jsonResponse.sources.length > 0) {
+                        this.renderSourceButtons(messageDiv, jsonResponse.sources);
+                    }
                 } else if (jsonResponse.content) {
                     // Handle direct content: {"content": "text"}
                     let formattedContent = jsonResponse.content.replace(/\*\*/g, '');
@@ -945,6 +955,64 @@ class CityparkingChatWidget extends HTMLElement {
             console.error('Error submitting user info:', error);
             throw error;
         }
+    }
+    
+    renderActionButtons(messageDiv, actions) {
+        const buttonsDiv = document.createElement('div');
+        buttonsDiv.classList.add('action-buttons');
+        
+        actions.forEach(action => {
+            const button = document.createElement('button');
+            button.classList.add('action-button', 'primary');
+            button.textContent = action.text;
+            
+            button.addEventListener('click', () => {
+                buttonsDiv.remove();
+                this.handleActionClick(action.payload);
+            });
+            
+            buttonsDiv.appendChild(button);
+        });
+        
+        messageDiv.appendChild(buttonsDiv);
+        this.scrollToBottom();
+    }
+    
+    async handleActionClick(payload) {
+        // Send payload back to n8n as a new message
+        const input = this.shadowRoot.querySelector('input');
+        const originalValue = input.value;
+        
+        // Temporarily set input value to payload and send
+        input.value = payload;
+        await this.sendMessage();
+        
+        // Restore original input value
+        input.value = originalValue;
+    }
+    
+    renderSourceButtons(messageDiv, sources) {
+        const sourcesDiv = document.createElement('div');
+        sourcesDiv.classList.add('sources');
+        
+        // Take only the first two sources
+        const topSources = sources.slice(0, 2);
+        
+        // Get translated source text
+        const sourceText = this.messages.sourceButton[this.config.language] || this.messages.sourceButton.en;
+        
+        topSources.forEach((source, index) => {
+            const button = document.createElement('button');
+            button.classList.add('source-button');
+            button.textContent = `${sourceText} ${index + 1}`;
+            button.addEventListener('click', () => {
+                window.open(source, '_blank');
+            });
+            sourcesDiv.appendChild(button);
+        });
+        
+        messageDiv.appendChild(sourcesDiv);
+        this.scrollToBottom();
     }
     
     addMessage(text, type, sources = [], isWelcome = false) {
