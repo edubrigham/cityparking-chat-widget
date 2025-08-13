@@ -146,16 +146,43 @@ class CityparkingChatWidget extends HTMLElement {
                         nl: "Voer een geldig e-mailadres in (bijv. naam@voorbeeld.com)",
                         fr: "Veuillez entrer une adresse e-mail valide (ex: nom@exemple.com)"
                     },
-                    phone: {
-                        en: "Please enter a valid Belgian phone number (e.g., 0470123456 or 02123456)",
-                        nl: "Voer een geldig Belgisch telefoonnummer in (bijv. 0470123456 of 02123456)",
-                        fr: "Veuillez entrer un numéro de téléphone belge valide (ex: 0470123456 ou 02123456)"
-                    }
+                                    phone: {
+                    en: "Please enter a valid Belgian phone number (mobile: 0470123456 or landline: 021234567)",
+                    nl: "Voer een geldig Belgisch telefoonnummer in (mobiel: 0470123456 of vast: 021234567)",
+                    fr: "Veuillez entrer un numéro de téléphone belge valide (mobile: 0470123456 ou fixe: 021234567)"
+                }
                 },
                 success: {
                     en: "Thank you! Your information has been sent to our support team.",
                     nl: "Bedankt! Uw informatie is verzonden naar ons supportteam.",
                     fr: "Merci ! Vos informations ont été envoyées à notre équipe de support."
+                },
+                placeholders: {
+                    firstName: {
+                        en: "Enter your first name",
+                        nl: "Voer uw voornaam in",
+                        fr: "Entrez votre prénom"
+                    },
+                    lastName: {
+                        en: "Enter your last name",
+                        nl: "Voer uw achternaam in",
+                        fr: "Entrez votre nom de famille"
+                    },
+                    email: {
+                        en: "e.g., name@example.com",
+                        nl: "bijv. naam@voorbeeld.com",
+                        fr: "ex: nom@exemple.com"
+                    },
+                    phone: {
+                        en: "e.g., 0470123456 or 02123456   ",
+                        nl: "bijv. 0470123456 of 02123456",
+                        fr: "ex: 0470123456 ou 02123456"
+                    },
+                    question: {
+                        en: "Describe your parking question or issue...",
+                        nl: "Beschrijf uw parkeervraag of probleem...",
+                        fr: "Décrivez votre question ou problème de stationnement..."
+                    }
                 }
             },
             placeholder: {
@@ -169,6 +196,7 @@ class CityparkingChatWidget extends HTMLElement {
                 fr: "Source"
             }
         };
+
         
         this.createWidget();
         this.initialize();
@@ -534,6 +562,31 @@ class CityparkingChatWidget extends HTMLElement {
                 border: 1px solid #ddd;
                 border-radius: 8px;
                 box-sizing: border-box;
+            }
+
+            .form-field input::placeholder,
+            .form-field textarea::placeholder {
+                color: #999;
+                opacity: 1;
+            }
+
+            .form-field input.error,
+            .form-field textarea.error {
+                border-color: #e74c3c;
+                background-color: #fdf2f2;
+            }
+
+            .form-field input.error:focus,
+            .form-field textarea.error:focus {
+                border-color: #e74c3c;
+                box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.2);
+            }
+
+            .field-error {
+                color: #e74c3c;
+                font-size: 11px;
+                margin-top: 3px;
+                display: block;
             }
 
             .form-field textarea {
@@ -1018,10 +1071,56 @@ class CityparkingChatWidget extends HTMLElement {
     }
 
     validateBelgianPhone(phone) {
-        const cleanPhone = phone.replace(/[\s.-]/g, '');
-        const mobileRegex = /^(?:\+32|0)4\d{8}$/;
-        const landlineRegex = /^(?:\+32|0)\d{8}$/;
+        // Clean the phone number (remove spaces, dots, slashes, parentheses)
+        const cleanPhone = phone.replace(/[\s.\-\/\(\)]/g, '');
+        
+        // Belgian Mobile Numbers: Specific operator prefixes
+        // Proximus: 047X, Mobile Vikings: 0456, Telenet: 0467/0468
+        // Orange: 049X, Hey!: 0466, VOO: 0455
+        // Base/Telenet: 048X, Lycamobile: 0465
+        const mobileRegex = /^(\+32(455|456|465|466|467|468|47\d|48\d|49\d)\d{6}|0(455|456|465|466|467|468|47\d|48\d|49\d)\d{6})$/;
+        
+        // Belgian Landline Numbers: Valid area codes only
+        const landlineRegex = /^(\+32[23579]\d{7,8}|0[23579]\d{7,8}|\+321[0-6]\d{6,7}|01[0-6]\d{6,7}|\+325[0-9]\d{6,7}|05[0-9]\d{6,7}|\+326[0-9]\d{6,7}|06[0-9]\d{6,7}|\+3271\d{6}|071\d{6}|\+328[0-7,9]\d{6,7}|08[0-7,9]\d{6,7})$/;
+        
         return mobileRegex.test(cleanPhone) || landlineRegex.test(cleanPhone);
+    }
+    
+    showFieldError(fieldId, message) {
+        const field = this.shadowRoot.querySelector(`#${fieldId}`);
+        const fieldContainer = field.closest('.form-field');
+        
+        // Add error class to input
+        field.classList.add('error');
+        
+        // Remove any existing error message
+        const existingError = fieldContainer.querySelector('.field-error');
+        if (existingError) {
+            existingError.remove();
+        }
+        
+        // Add new error message
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'field-error';
+        errorDiv.textContent = message;
+        fieldContainer.appendChild(errorDiv);
+        
+        // Remove error styling when user starts typing
+        const clearError = () => {
+            field.classList.remove('error');
+            errorDiv.remove();
+            field.removeEventListener('input', clearError);
+        };
+        field.addEventListener('input', clearError);
+    }
+    
+    clearFieldErrors() {
+        const form = this.shadowRoot.querySelector('.user-info-form');
+        const errorInputs = form.querySelectorAll('input.error, textarea.error');
+        const errorMessages = form.querySelectorAll('.field-error');
+        
+        errorInputs.forEach(input => input.classList.remove('error'));
+        errorMessages.forEach(error => error.remove());
     }
     
     showUserInfoForm() {
@@ -1037,23 +1136,23 @@ class CityparkingChatWidget extends HTMLElement {
                 <h3>${this.messages.userInfo.formTitle[formLanguage] || this.messages.userInfo.formTitle.en}</h3>
                 <div class="form-field">
                     <label for="firstName">${this.messages.userInfo.firstName[formLanguage] || this.messages.userInfo.firstName.en}</label>
-                    <input type="text" id="firstName" name="firstName" required>
+                    <input type="text" id="firstName" name="firstName" required placeholder="${this.messages.userInfo.placeholders.firstName[formLanguage] || this.messages.userInfo.placeholders.firstName.en}">
                 </div>
                 <div class="form-field">
                     <label for="lastName">${this.messages.userInfo.lastName[formLanguage] || this.messages.userInfo.lastName.en}</label>
-                    <input type="text" id="lastName" name="lastName" required>
+                    <input type="text" id="lastName" name="lastName" required placeholder="${this.messages.userInfo.placeholders.lastName[formLanguage] || this.messages.userInfo.placeholders.lastName.en}">
                 </div>
                 <div class="form-field">
                     <label for="email">${this.messages.userInfo.email[formLanguage] || this.messages.userInfo.email.en}</label>
-                    <input type="email" id="email" name="email" required>
+                    <input type="email" id="email" name="email" required placeholder="${this.messages.userInfo.placeholders.email[formLanguage] || this.messages.userInfo.placeholders.email.en}">
                 </div>
                 <div class="form-field">
                     <label for="phone">${this.messages.userInfo.phone[formLanguage] || this.messages.userInfo.phone.en}</label>
-                    <input type="tel" id="phone" name="phone" required>
+                    <input type="tel" id="phone" name="phone" required placeholder="${this.messages.userInfo.placeholders.phone[formLanguage] || this.messages.userInfo.placeholders.phone.en}">
                 </div>
                 <div class="form-field">
                     <label for="question">${this.messages.userInfo.question[formLanguage] || this.messages.userInfo.question.en}</label>
-                    <textarea id="question" name="question" required></textarea>
+                    <textarea id="question" name="question" required placeholder="${this.messages.userInfo.placeholders.question[formLanguage] || this.messages.userInfo.placeholders.question.en}"></textarea>
                 </div>
                 <button class="form-submit-button">${this.messages.userInfo.submitButton[formLanguage] || this.messages.userInfo.submitButton.en}</button>
             </div>
@@ -1083,27 +1182,61 @@ class CityparkingChatWidget extends HTMLElement {
         const form = this.shadowRoot.querySelector('.user-info-form');
         const submitButton = form.querySelector('.form-submit-button');
         
-        const firstName = form.querySelector('#firstName').value.trim();
-        const lastName = form.querySelector('#lastName').value.trim();
-        const email = form.querySelector('#email').value.trim();
-        const phone = form.querySelector('#phone').value.trim();
-        const question = form.querySelector('#question').value.trim();
+        const firstNameInput = form.querySelector('#firstName');
+        const lastNameInput = form.querySelector('#lastName');
+        const emailInput = form.querySelector('#email');
+        const phoneInput = form.querySelector('#phone');
+        const questionInput = form.querySelector('#question');
+        
+        const firstName = firstNameInput.value.trim();
+        const lastName = lastNameInput.value.trim();
+        const email = emailInput.value.trim();
+        const phone = phoneInput.value.trim();
+        const question = questionInput.value.trim();
 
         // Use conversation language for validation messages
         const formLanguage = this.conversationLanguage || this.config.language;
         
-        if (!firstName || !lastName || !question) {
-            this.addMessage(this.messages.userInfo.validation.required[formLanguage] || this.messages.userInfo.validation.required.en, 'bot');
-            return;
+        // Clear previous errors
+        this.clearFieldErrors();
+        
+        let hasErrors = false;
+        
+        // Validate required fields
+        if (!firstName) {
+            this.showFieldError('firstName', this.messages.userInfo.validation.required[formLanguage] || this.messages.userInfo.validation.required.en);
+            hasErrors = true;
+        }
+        
+        if (!lastName) {
+            this.showFieldError('lastName', this.messages.userInfo.validation.required[formLanguage] || this.messages.userInfo.validation.required.en);
+            hasErrors = true;
+        }
+        
+        if (!question) {
+            this.showFieldError('question', this.messages.userInfo.validation.required[formLanguage] || this.messages.userInfo.validation.required.en);
+            hasErrors = true;
         }
 
-        if (!this.validateEmail(email)) {
-            this.addMessage(this.messages.userInfo.validation.email[formLanguage] || this.messages.userInfo.validation.email.en, 'bot');
-            return;
+        // Validate email format
+        if (email && !this.validateEmail(email)) {
+            this.showFieldError('email', this.messages.userInfo.validation.email[formLanguage] || this.messages.userInfo.validation.email.en);
+            hasErrors = true;
+        } else if (!email) {
+            this.showFieldError('email', this.messages.userInfo.validation.required[formLanguage] || this.messages.userInfo.validation.required.en);
+            hasErrors = true;
         }
 
-        if (!this.validateBelgianPhone(phone)) {
-            this.addMessage(this.messages.userInfo.validation.phone[formLanguage] || this.messages.userInfo.validation.phone.en, 'bot');
+        // Validate phone format
+        if (phone && !this.validateBelgianPhone(phone)) {
+            this.showFieldError('phone', this.messages.userInfo.validation.phone[formLanguage] || this.messages.userInfo.validation.phone.en);
+            hasErrors = true;
+        } else if (!phone) {
+            this.showFieldError('phone', this.messages.userInfo.validation.required[formLanguage] || this.messages.userInfo.validation.required.en);
+            hasErrors = true;
+        }
+        
+        if (hasErrors) {
             return;
         }
 
