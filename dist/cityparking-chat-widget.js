@@ -672,7 +672,7 @@ class CityparkingChatWidget extends HTMLElement {
         console.log('Widget state reset. New session:', this.sessionToken);
     }
 
-    sendActionMessage(payload, buttonText = null) {
+    sendActionMessage(payload, buttonText = null, language = null) {
         // Use the actual button text that was clicked, or fallback to payload
         const displayText = buttonText || payload;
         this.addMessage(displayText, 'user');
@@ -687,21 +687,28 @@ class CityparkingChatWidget extends HTMLElement {
         this.setInputState(false);
         this.isGeneratingResponse = true;
         
-        // Send to webhook
-        this.sendMessageToWebhook(payload);
+        // Send to webhook with language information
+        this.sendMessageToWebhook(payload, language);
     }
 
-    async sendMessageToWebhook(message) {
+    async sendMessageToWebhook(message, language = null) {
         try {
+            const payload = {
+                chatInput: message,
+                sessionId: this.sessionToken
+            };
+            
+            // Include language if provided (for action responses)
+            if (language) {
+                payload.language = language;
+            }
+            
             const response = await fetch(this.config.webhookUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    chatInput: message,
-                    sessionId: this.sessionToken
-                })
+                body: JSON.stringify(payload)
             });
 
             const jsonResponse = await response.json();
@@ -824,6 +831,9 @@ class CityparkingChatWidget extends HTMLElement {
                         const actionsDiv = document.createElement('div');
                         actionsDiv.classList.add('action-buttons');
                         
+                        // Store the language from this response for action buttons
+                        const responseLanguage = jsonResponse.language || this.conversationLanguage;
+                        
                         jsonResponse.actions.forEach((action) => {
                             const button = document.createElement('button');
                             button.textContent = action.text || 'Action';
@@ -836,8 +846,8 @@ class CityparkingChatWidget extends HTMLElement {
                             } else if (action.type === 'message') {
                                 button.classList.add('action-button', 'primary');
                                 button.addEventListener('click', () => {
-                                    // Send both the payload and the actual button text that was clicked
-                                    this.sendActionMessage(action.payload, action.text);
+                                    // Send payload, button text, and language back to n8n
+                                    this.sendActionMessage(action.payload, action.text, responseLanguage);
                                 });
                             }
                             
