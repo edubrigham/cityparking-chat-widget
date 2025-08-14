@@ -32,6 +32,11 @@ class CityparkingChatWidget extends HTMLElement {
     constructor(config = {}) {
         super();
         this.attachShadow({ mode: 'open' });
+        
+        // Version identifier for debugging
+        this.version = '1.3.0';
+        console.log('CityparkingChatWidget version:', this.version);
+        
         this.noAnswerCount = 0;
         this.isCollectingUserInfo = false;
         this.isGeneratingResponse = false;
@@ -754,6 +759,7 @@ class CityparkingChatWidget extends HTMLElement {
                 referrer: document.referrer || null
             };
             
+            
             // Include language if provided (for action responses)
             if (language) {
                 payload.language = language;
@@ -855,7 +861,10 @@ class CityparkingChatWidget extends HTMLElement {
                 },
                 body: JSON.stringify({
                     chatInput: message,
-                    sessionId: this.sessionToken
+                    sessionId: this.sessionToken,
+                    pageUrl: window.location.href,
+                    pageTitle: document.title,
+                    referrer: document.referrer || null
                 })
             });
 
