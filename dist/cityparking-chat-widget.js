@@ -748,7 +748,10 @@ class CityparkingChatWidget extends HTMLElement {
         try {
             const payload = {
                 chatInput: message,
-                sessionId: this.sessionToken
+                sessionId: this.sessionToken,
+                pageUrl: window.location.href,
+                pageTitle: document.title,
+                referrer: document.referrer || null
             };
             
             // Include language if provided (for action responses)
@@ -1276,6 +1279,9 @@ class CityparkingChatWidget extends HTMLElement {
                 body: JSON.stringify({
                     chatInput: 'handover_form_submission',
                     sessionId: this.sessionToken,
+                    pageUrl: window.location.href,
+                    pageTitle: document.title,
+                    referrer: document.referrer || null,
                     handover_info: {
                         firstName: userInfo.firstName,
                         lastName: userInfo.lastName,
